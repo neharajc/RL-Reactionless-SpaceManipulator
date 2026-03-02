@@ -1,0 +1,50 @@
+<mujoco model="simple_2dof_robot_with_two_arms">
+  <compiler angle="radian"/>
+  <option gravity="0 0 -9.81"/>
+
+  <worldbody>
+    <!-- Base link (connected to world via hinge) -->
+    <body name="base_link" pos="0 0 0">
+      <inertial pos="0 0 0" mass="1.0" diaginertia="0.01 0.01 0.01"/>
+      <geom name="base_geom" type="cylinder" size="0.05 0.05" rgba="0.6 0.6 0.6 1"/>
+      <joint name="base_joint" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true"/>
+
+      <!-- First arm (positive X) -->
+      <body name="link1" pos="0 0 0">
+        <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true"/>
+        <!-- Cylinder length=0.2 => half-length=0.1; centered at +0.1 X; oriented along +X -->
+        <geom name="link1_geom" type="cylinder" size="0.03 0.1" pos="0.1 0 0" zaxis="1 0 0" rgba="0.2 0.4 0.9 1"/>
+
+        <body name="link2" pos="0.2 0 0">
+          <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+          <joint name="joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true"/>
+          <geom name="link2_geom" type="cylinder" size="0.03 0.1" pos="0.1 0 0" zaxis="1 0 0" rgba="0.2 0.9 0.4 1"/>
+        </body>
+      </body>
+
+      <!-- Second arm (negative X) -->
+      <body name="link3" pos="0 0 0">
+        <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+        <joint name="joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true"/>
+        <!-- Oriented along -X; centered at -0.1 X -->
+        <geom name="link3_geom" type="cylinder" size="0.03 0.1" pos="-0.1 0 0" zaxis="-1 0 0" rgba="0.9 0.2 0.2 1"/>
+
+        <body name="link4" pos="-0.2 0 0">
+          <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+          <joint name="joint4" type="hinge" axis="0 0 1" range="-3.14 3.14" limited="true"/>
+          <geom name="link4_geom" type="cylinder" size="0.03 0.1" pos="-0.1 0 0" zaxis="-1 0 0" rgba="0.9 0.9 0.3 1"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Add one position servo per hinge so sliders set joint angle directly (in radians) -->
+  <actuator>
+    <motor name="base_pos"  joint="base_joint" />
+    <motor name="joint1_pos" joint="joint1"  />
+    <motor name="joint2_pos" joint="joint2"   />
+    <position name="joint3_pos" joint="joint3"    kp="100" ctrllimited="true" ctrlrange="-3.14 3.14"/>
+    <position name="joint4_pos" joint="joint4"    kp="100" ctrllimited="true" ctrlrange="-3.14 3.14"/>
+  </actuator>
+</mujoco>

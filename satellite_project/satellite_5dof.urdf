@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<robot name="satellite_5dof">
+
+  <!-- BASE: sphere connected to world via revolute joint (z-axis) -->
+  <link name="base_parent"/>
+  <link name="base">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="2.0"/>
+      <!-- inertia for solid sphere, r=0.1, m=2 -->
+      <inertia ixx="0.008" ixy="0" ixz="0" iyy="0.008" iyz="0" izz="0.008"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry><sphere radius="0.1"/></geometry>
+      <material name="gray"><color rgba="0.6 0.6 0.8 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry><sphere radius="0.1"/></geometry>
+    </collision>
+  </link>
+
+  <joint name="base_joint" type="revolute">
+    <parent link="base_parent"/>
+    <child link="base"/>
+    <origin xyz="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Link properties: identical cylinders -->
+  <!-- mass=1 kg, length=0.2 m, radius=0.03 m -->
+  <!-- inertia approximated for solid cylinder -->
+
+  <link name="link1">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.0012" ixy="0" ixz="0" iyy="0.0012" iyz="0" izz="0.0006"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/> <!-- rotate so cylinder aligns with x-axis -->
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+      <material name="blue"><color rgba="0.2 0.4 0.9 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+    </collision>
+  </link>
+
+  <link name="link2">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.0012" ixy="0" ixz="0" iyy="0.0012" iyz="0" izz="0.0006"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+      <material name="green"><color rgba="0.2 0.9 0.3 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+    </collision>
+  </link>
+
+  <link name="link3">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.0012" ixy="0" ixz="0" iyy="0.0012" iyz="0" izz="0.0006"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+      <material name="orange"><color rgba="0.9 0.5 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+    </collision>
+  </link>
+
+  <link name="link4">
+    <inertial>
+      <origin xyz="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.0012" ixy="0" ixz="0" iyy="0.0012" iyz="0" izz="0.0006"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+      <material name="red"><color rgba="0.9 0.2 0.2 1"/></material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder length="0.2" radius="0.03"/></geometry>
+    </collision>
+  </link>
+
+  <!-- Joints (all revolute around z-axis) -->
+  <!-- Placement: links connected along ±x axis -->
+
+  <joint name="joint1" type="revolute">
+    <parent link="base"/>
+    <child link="link1"/>
+    <origin xyz="0.16 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0.2 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <joint name="joint3" type="revolute">
+    <parent link="base"/>
+    <child link="link3"/>
+    <origin xyz="-0.16 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <joint name="joint4" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="-0.2 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Actuators: torque control -->
+  <actuator>
+    <torque name="base_act" joint="base_joint" ctrlrange="-10 10"/>
+    <torque name="joint1_act" joint="joint1" ctrlrange="-10 10"/>
+    <torque name="joint2_act" joint="joint2" ctrlrange="-10 10"/>
+    <torque name="joint3_act" joint="joint3" ctrlrange="-10 10"/>
+    <torque name="joint4_act" joint="joint4" ctrlrange="-10 10"/>
+  </actuator>
+
+</robot>

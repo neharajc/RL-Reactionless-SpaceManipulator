@@ -1,0 +1,59 @@
+<mujoco model="hybrid_robot">
+  <compiler angle="radian"/>
+  <option gravity="0 0 -9.81"/>
+
+  <default>
+    <joint limited="true" damping="0.05"/>
+    <geom contype="1" conaffinity="1" friction="0.8 0.1 0.1"/>
+  </default>
+
+  <worldbody>
+    <!-- Base -->
+    <body name="base_link" pos="0 0 0">
+      <inertial pos="0 0 0" mass="1.0" diaginertia="0.01 0.01 0.01"/>
+      <geom name="base_geom" type="box" size="0.05 0.05 0.05" rgba="0.6 0.6 0.6 1"/>
+      <!-- Base is a hinge around z -->
+      <joint name="base_joint" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+
+      <!-- Left branch: joint1 -> link1 -> joint2 -> link2 (extends +x) -->
+      <body name="link1" pos="0 0 0">
+        <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+        <!-- Cylinder along +x from 0 to 0.2 -->
+        <geom name="link1_geom" type="cylinder" fromto="0 0 0  0.2 0 0" size="0.03" rgba="0.2 0.4 0.9 1"/>
+
+        <body name="link2" pos="0.2 0 0">
+          <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+          <joint name="joint2" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+          <!-- Cylinder along +x from 0 to 0.2 (relative to link2 frame) -->
+          <geom name="link2_geom" type="cylinder" fromto="0 0 0  0.2 0 0" size="0.03" rgba="0.2 0.9 0.4 1"/>
+        </body>
+      </body>
+
+      <!-- Right branch: joint3 -> link3 -> joint4 -> link4 (extends -x) -->
+      <body name="link3" pos="0 0 0">
+        <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+        <joint name="joint3" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+        <!-- Cylinder along -x from 0 to -0.2 -->
+        <geom name="link3_geom" type="cylinder" fromto="0 0 0  -0.2 0 0" size="0.03" rgba="0.9 0.2 0.2 1"/>
+
+        <body name="link4" pos="-0.2 0 0">
+          <inertial pos="0 0 0" mass="1.0" diaginertia="0.005 0.005 0.005"/>
+          <joint name="joint4" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+          <!-- Cylinder along -x from 0 to -0.2 (relative to link4 frame) -->
+          <geom name="link4_geom" type="cylinder" fromto="0 0 0  -0.2 0 0" size="0.03" rgba="0.9 0.9 0.3 1"/>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- Use torque motors for RL control; ctrlrange chosen to cover your action set -->
+  <actuator>
+    <!-- Optional base motor if you want to actuate/penalize base motion explicitly -->
+    <motor name="m_base" joint="base_joint" gear="1" ctrllimited="true" ctrlrange="-5 5"/>
+    <motor name="m1" joint="joint1" gear="1" ctrllimited="true" ctrlrange="-5 5"/>
+    <motor name="m2" joint="joint2" gear="1" ctrllimited="true" ctrlrange="-5 5"/>
+    <motor name="m3" joint="joint3" gear="1" ctrllimited="true" ctrlrange="-5 5"/>
+    <motor name="m4" joint="joint4" gear="1" ctrllimited="true" ctrlrange="-5 5"/>
+  </actuator>
+</mujoco>

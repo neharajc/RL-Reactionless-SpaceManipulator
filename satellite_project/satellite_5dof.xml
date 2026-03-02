@@ -1,0 +1,111 @@
+<mujoco model="satellite_5dof">
+  <option iterations="50" timestep="0.001" solver="PGS" gravity="0 0 -9.81" />
+
+  <compiler angle="radian" meshdir="meshes" eulerseq="zyx" autolimits="true" />
+
+  <default>
+    <joint limited="false" damping="0.01" armature="0.01" frictionloss="0.01" />
+    <geom condim="4" contype="1" conaffinity="15" friction="0.9 0.2 0.2" solref="0.001 2" />
+    <motor ctrllimited="true" ctrlrange="-1 1" gear="1" />
+    <equality solref="0.001 2" />
+    <default class="visualgeom">
+      <geom material="visualgeom" condim="1" contype="0" conaffinity="0" />
+    </default>
+  </default>
+
+  <worldbody>
+    <light directional="true" diffuse="0.4 0.4 0.4" specular="0.1 0.1 0.1"
+           pos="0 0 5.0" dir="0 0 -1" castshadow="false" />
+    <light directional="true" diffuse="0.6 0.6 0.6" specular="0.2 0.2 0.2"
+           pos="0 0 4" dir="0 0 -1" />
+    <geom name="ground" type="plane" pos="0 0 0" size="100 100 0.001"
+          quat="1 0 0 0" material="matplane" condim="3" conaffinity="15" />
+    <camera name="fixed" pos="0 -3.0 0.525" xyaxes="1 0 0 0 0 1" />
+    <camera name="track" mode="trackcom" pos="0 -3.0 0.525" xyaxes="1 0 0 0 0 1" />
+
+    <body name="root" pos="0 0 0.025" quat="1 0 0 0">
+      
+      <site name="imu" size="0.01" pos="0 0 0" />
+
+      <body name="base">
+        <inertial pos="0 0 0" mass="2" diaginertia="0.008 0.008 0.008" />
+        <joint name="base_joint" pos="0 0 0" axis="0 0 1" limited="true" range="-3.1416 3.1416"/>
+        <geom size="0.1" type="sphere" rgba="0.6 0.6 0.8 1"
+              contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+
+        <body name="link1" pos="0.16 0 0">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.0035 0.0035 0.0004" />
+          <joint name="joint1" pos="0 0 0" axis="0 0 1" limited="true" range="-1.5708 1.5708"/>
+          <geom size="0.1 0.025 0.025" type="box" rgba="0.2 0.4 0.9 1"
+                contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+
+          <body name="link2" pos="0.2 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.0035 0.0035 0.0004" />
+            <joint name="joint2" pos="0 0 0" axis="0 0 1" limited="true" range="-1.5708 1.5708"/>
+            <geom size="0.1 0.025 0.025" type="box" rgba="0.2 0.9 0.3 1"
+                  contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          </body>
+        </body>
+
+        <body name="link3" pos="-0.16 0 0">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.0035 0.0035 0.0004" />
+          <joint name="joint3" pos="0 0 0" axis="0 0 1" limited="true" range="-1.5708 1.5708"/>
+          <geom size="0.1 0.025 0.025" type="box" rgba="0.9 0.5 0.2 1"
+                contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+
+          <body name="link4" pos="-0.2 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.0035 0.0035 0.0004" />
+            <joint name="joint4" pos="0 0 0" axis="0 0 1" limited="true" range="-1.5708 1.5708"/>
+            <geom size="0.1 0.025 0.025" type="box" rgba="0.9 0.2 0.2 1"
+                  contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <asset>
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".0 .0 .0" rgb2=".8 .8 .8"
+             width="100" height="100" />
+    <material name="matplane" reflectance="0." texture="texplane" texrepeat="1 1"
+              texuniform="true" />
+    <material name="visualgeom" rgba="0.5 0.9 0.2 1" />
+  </asset>
+
+  <actuator>
+    <motor name="base_joint_act" joint="base_joint" />
+    <motor name="joint1_act" joint="joint1" />
+    <motor name="joint2_act" joint="joint2" />
+    <motor name="joint3_act" joint="joint3" />
+    <motor name="joint4_act" joint="joint4" />
+  </actuator>
+
+  <sensor>
+    <!-- Joint state sensors -->
+    <jointpos name="base_joint_p" joint="base_joint" />
+    <jointvel name="base_joint_v" joint="base_joint" />
+
+    <jointpos name="joint1_p" joint="joint1" />
+    <jointvel name="joint1_v" joint="joint1" />
+
+    <jointpos name="joint2_p" joint="joint2" />
+    <jointvel name="joint2_v" joint="joint2" />
+
+    <jointpos name="joint3_p" joint="joint3" />
+    <jointvel name="joint3_v" joint="joint3" />
+
+    <jointpos name="joint4_p" joint="joint4" />
+    <jointvel name="joint4_v" joint="joint4" />
+
+    <!-- Actuator force sensors -->
+    <actuatorfrc name="base_joint_f" actuator="base_joint_act" />
+    <actuatorfrc name="joint1_f" actuator="joint1_act" />
+    <actuatorfrc name="joint2_f" actuator="joint2_act" />
+    <actuatorfrc name="joint3_f" actuator="joint3_act" />
+    <actuatorfrc name="joint4_f" actuator="joint4_act" />
+
+    <!-- IMU-like sensors -->
+    <framequat name="orientation" objtype="site" objname="imu" noise="0.001" />
+    <gyro name="angular_velocity" site="imu" noise="0.005" cutoff="34.9" />
+  </sensor>
+</mujoco>
